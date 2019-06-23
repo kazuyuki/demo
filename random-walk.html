@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <meta charset="UTF-8">
+ <title>アニメーション - random work</title>
+ <script type="text/javascript">
+ window.onload = function(){
+
+	//コンテキストの取得
+	var canvas = document.getElementById("can");
+	if(!canvas || !canvas.getContext) return false;
+	var ctx = canvas.getContext("2d");
+	ctx.fillStyle = "#ceceff";//描画色を指定
+     
+	//options
+	var point = {x:300,y:250};	//座標
+	var timer;			//タイマー
+	var delay = 10;			//タイマーを実行する間隔
+
+	//繰り返し描画を行う関数。
+	var loop = function(){
+
+		//描画
+		//ctx.clearRect(0,0,600,500);	//一度canvasをクリア
+
+		ctx.beginPath();
+
+		ctx.fillRect(point.x,point.y,1,1);//pointの座標に描画
+		ctx.closePath();
+
+		ctx.fill();
+
+		point.x += Math.floor( Math.random() * (2 + 1) ) - 1;
+		point.y += Math.floor( Math.random() * (2 + 1) ) - 1;
+		if (point.x < 0) {
+			point.x = 0;
+		}
+		if (point.x > 600) {
+			point.x = 600;
+		}
+		if (point.y < 0) {
+			point.y = 0;
+		}
+		if (point.y > 500) {
+			point.y = 500;
+		}
+
+	         //タイマー(一度クリアしてから再設定。)
+	         clearTimeout(timer);
+	         timer = setTimeout(loop,delay);
+	}
+
+	loop();
+}
+</script>
+
+<style type="text/css" media="screen">
+ div#stage{
+     width:600px;
+     height:500px;
+     position:absolute;
+     top:50%;
+     left:50%;
+     margin-left:-300px;
+     margin-top:-250px;
+     background:#000;
+ }
+</style>
+
+ </head>
+
+ <body>
+ <div id="stage">
+ <canvas id="can" width="600" height="500"></canvas>
+ </div>
+ </body>
+ </html> 

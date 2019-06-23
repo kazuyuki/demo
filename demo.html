@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+ <head>
+ <meta charset="UTF-8">
+ <title>アニメーションのテスト</title>
+ <script type="text/javascript">
+ window.onload = function(){	
+
+	//コンテキストの取得
+	var canvas = document.getElementById("can");
+	if(!canvas || !canvas.getContext) return false;
+	var ctx = canvas.getContext("2d");
+	ctx.fillStyle = "#ceceff";//描画色を指定
+     
+	//options
+	var point = {x:0,y:500};	//座標
+	var par = {x:1,y:1};		//変化量
+	var timer;			//タイマー
+	var delay = 12;			//タイマーを実行する間隔
+	var a= 0;
+	var r = 5;          
+	//繰り返し描画を行う関数。
+	var loop = function(){
+
+		//point.x = 50;
+		//point.y = 475 - 450 * Math.abs(Math.sin(a++/250 * Math.PI));
+
+		//描画
+		ctx.clearRect(0,0,600,500);	//一度canvasをクリア
+		//ctx.fillRect(point.x,point.y,50,50);//pointの座標に描画
+		//ctx.beginPath();
+
+		for (var i=0; i<60; i++){
+			ctx.beginPath();
+			/*
+			ctx.arc(
+				r + r * i * 43,
+				475 - 450 * Math.abs(Math.cos((a+5*i)/180 * Math.PI)),
+				//r,
+				1 + 8 * r * Math.abs(Math.sin((a-5*i)/180*Math.PI)),
+				0, Math.PI*2, false);
+			*/
+			ctx.arc(
+				r + r * i * 2,
+				475 - 450 * Math.abs(Math.sin((a+3*i)/180 * Math.PI)),
+				r,
+				// 1+4*r * Math.abs(Math.sin(a/180*Math.PI)),
+				0, Math.PI*2, false);
+
+			ctx.closePath();
+			//ctx.stroke();
+			ctx.fill();
+		}
+		for(i=0; i<6; i++){
+			ctx.beginPath();
+			ctx.arc(
+				50+100*i,250,
+				10 * r * (1-Math.abs(Math.sin((a*6+i*15)/180 * Math.PI))),
+				0, Math.PI*2, false);
+			ctx.closePath();
+			ctx.fill();
+		}
+		a++;
+
+		/*
+		for (var i=0; i<=10; i++){
+			ctx.arc(
+				(point.x + (50 * i)),
+				point.y,
+				25, 0, Math.PI*2, false);
+		}
+		*/
+
+
+		/*
+		for (var i=0, i<10; i++){
+			ctx.arc(point.x, 50*i, 5+100*Math.abs(Math.sin(a++/250*Math.PI)), 0, Math.PI*2, false);
+			ctx.fill();
+		}
+		*/
+		//ctx.closePath();
+
+		//ctx.stroke();
+		//ctx.fill();
+
+	         //タイマー(一度クリアしてから再設定。)
+	         clearTimeout(timer);
+	         timer = setTimeout(loop,delay);
+	}
+
+	loop();
+}
+</script>
+
+<style type="text/css" media="screen">
+ div#stage{
+     width:600px;
+     height:500px;
+     position:absolute;
+     top:50%;
+     left:50%;
+     margin-left:-300px;
+     margin-top:-250px;
+     background:#000;
+ }
+</style>
+
+ </head>
+
+ <body>
+ <div id="stage">
+ <canvas id="can" width="600" height="500"></canvas>
+ </div>
+ </body>
+ </html> 
