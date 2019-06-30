@@ -1,0 +1,122 @@
+﻿<!DOCTYPE html>
+<html>
+ <head>
+ <meta charset="UTF-8">
+ <title>random work</title>
+ <script type="text/javascript">
+ window.onload = function(){
+
+	//コンテキストの取得
+	var canvas = document.getElementById("can");
+	if(!canvas || !canvas.getContext) return false;
+	var ctx = canvas.getContext("2d");
+     
+	var width = 600;
+	var hight = 500;
+
+	//options
+	var point = {x:150,y:120};	//座標
+	var pointPrev = Object.create(point);
+	var timer;			//タイマー
+	var delay = 0;			//タイマーを実行する間隔
+	var direction = 0;
+	var updated = 0;
+	var size = 1;	//描画点の1辺の長さ = 1回の移動距離 
+
+	//軌跡ログ初期化
+	var screen = new Array(width);
+	for (var i = 0; i < width; i++){
+		screen[i] =new Array(hight);
+	}
+ 
+	for (var i = 0; i < width; i++){
+		for (var j = 0; j < hight; j++){
+			screen[i][j] = 0;
+		}
+	}
+  
+	//繰り返し描画を行う関数。
+	var loop = function(){
+
+		//描画
+
+		//pointの座標に描画
+		//描画色を指定
+		/*
+		if (updated == 0) {
+			ctx.fillStyle = "#ceceff";
+		} else {
+			ctx.fillStyle = "#ff0000";
+		}
+		*/
+		ctx.fillStyle = "#ceceff";
+		ctx.fillRect(pointPrev.x,         pointPrev.y,size,size);
+		ctx.fillRect(width - pointPrev.x, pointPrev.y,size,size);
+		ctx.fillRect(pointPrev.x,         hight - pointPrev.y,size,size);
+		ctx.fillRect(width - pointPrev.x, hight - pointPrev.y,size,size);
+
+		//point を上下左右へランダムに移動させる
+		direction = Math.floor( Math.random() * (3 + 1) );
+		if (direction == 0) {
+			point.x += size;
+		} else if (direction == 1) {
+			point.y -= size;
+		} else if (direction == 2) {
+			point.x -= size;
+		} else if (direction == 3) {
+			point.y += size;
+		}
+		if (point.x < 0) {
+			point.x = (width/2)- (width/2)%size;
+		}
+		if (point.x >= width/2) {
+			point.x = 0;
+		}
+		if (point.y < 0) {
+			point.y = (hight/2)- (hight/2)%size;
+		}
+		if (point.y >= hight/2) {
+			point.y = 0;
+		}
+		if (0 == screen[point.x][point.y]){
+			screen[point.x][point.y] = 1;	// 描画済
+			updated = 1;
+		} else {
+			//point.x = pointPrev.x;
+			//point.y = pointPrev.y;
+			updated = 0;
+		}
+		pointPrev.x = point.x;
+		pointPrev.y = point.y;
+
+		ctx.fillStyle = "#ff0000";//描画色を指定
+		ctx.fillRect(point.x,point.y, size,size);//pointの座標に
+		//ctx.fillRect(width - point.x, point.y,size,size);//pointの座標に
+
+		timer = setTimeout(loop,delay);
+	}
+	loop();
+}
+</script>
+
+<style type="text/css" media="screen">
+ div#stage{
+     width:600px;
+     height:500px;
+     position:absolute;
+     top:50%;
+     left:50%;
+     margin-left:-300px;
+     margin-top:-250px;
+     background:#000;
+ }
+</style>
+
+ </head>
+
+ <body>
+ <div id="stage">
+ <canvas id="can" width="600" height="500"></canvas>
+ </div>
+ </body>
+ </html> 
