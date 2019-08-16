@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Language" content="ja" />
+<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="Content-Script-Type" content="text/javascript" />
+<title>Mandelbro set</title>
+<script type="text/javascript">
+window.onload = function() {
+	var	canvas = document.getElementById("sample");
+	if (!canvas.getContext) return;
+	//var	W = 640;
+	//var	H = 400;
+	var	W = 600;
+	var	H = 600;
+	canvas.width = W;
+	canvas.hight = H;
+	var	ctx = canvas.getContext("2d");
+	ctx.translate(W/2, H/2);
+	var	dr = 4.0/W;
+	var	di = 4.0/H;
+	var DMAX  = 255;
+	var COL_D = 255.0 / DMAX;
+	
+	for(var i=H/-2; i<H/2; i++){
+		b = di * i;
+		B: for(var r=W/-2; r<W/2; r++){
+			a = dr * r;
+			var x=0.0;
+			var y=0.0
+			for(var n=0; n < DMAX; n++){
+				var x1 = x * x - y * y + a;
+				var y1 = 2.0 * x * y +b;
+				if ((x1 * x1 + y1 * y1) > 4){
+					var pr = (n*10) % 256;
+					var pg = (n*10) % 256;
+					var pb = (n*20) % 256;
+					ctx.fillStyle = "rgb(" + pr + "," + pg + "," + pb + ")";
+					ctx.fillRect(r,i,1,1);
+					continue B;
+				}
+				x = x1;
+				y = y1;
+			}
+			ctx.fillStyle = "rgb(0,0,0)";
+			ctx.fillRect(r,i,1,1);
+		}
+	}
+	ctx.restore();
+};
+</script>
+</head>
+<body>
+<h1>マンデルブロ集合</h1>
+<div><canvas width="800" height="800" id="sample"></canvas></div>
+</body>
+</html>
