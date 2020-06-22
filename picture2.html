@@ -36,7 +36,7 @@ window.onload = function(){
 	//options
 	var point = {x:300,y:250};	//座標
 	var timer;			//タイマー
-	var delay = 10;			//タイマーを実行する間隔 (ms)
+	var delay = 30;			//タイマーを実行する間隔 (ms)
 	var rad = 0;
 
 	const img = new Image ();
@@ -44,20 +44,35 @@ window.onload = function(){
 
 	ctx.drawImage(img, 0, 0);
 	var pic = ctx.getImageData(0, 0, img.width -1 , img.height -1);
+	var dat = pic.data;
+
+	console.log("width :" + pic.width);
+	console.log("height:" + pic.height);
+
+	//var dx = 0
 
 	//繰り返し描画を行う関数。
+	ctx.clearRect(0,0,600,500);	//一度canvasをクリア
 	var loop = function(){
 
 		//描画
 		ctx.clearRect(0,0,600,500);	//一度canvasをクリア
 
-		ctx.putImageData(pic, point.x - img.width / 2, point.y - img.height / 2 )
+
+		for ( var y = 0; y < pic.height; y++) {
+			var dx = 10 * Math.sin(rad + y * RADIAN);
+			for ( var x = 0; x < pic.width; x++) {
+				ctx.fillStyle =`rgb(	${dat[(y* pic.width +x)*4]},
+							${dat[(y* pic.width +x)*4+1]},
+							${dat[(y* pic.width +x)*4+2]})`;
+				ctx.fillRect(x+dx,y+dx,2,2);
+			}
+		}
+
+		//ctx.putImageData(pic, point.x - img.width / 2, point.y - img.height / 2 )
 
 		//drawRotatedImage(ctx, img, point.x, point.y, 360*8 * Math.sin(rad/8 * TO_RADIANS) );
 		//ctx.setTransform(Math.cos(rad * RADIAN),0,0, Math.cos(rad * RADIAN), point.x/2 - Math.cos(rad * RADIAN), point.y/2 - Math.cos(rad * RADIAN));
-
-
-
 
 		//ctx.drawImage( img, point.x - ( img.width / 2 ), point.y - ( img.height / 2 ));
 		//ctx.setTransform( Math.sin(rad * RADIAN),0,0, Math.sin(rad * RADIAN), 300 + 300*Math.cos(rad * RADIAN)/2 ,250);
