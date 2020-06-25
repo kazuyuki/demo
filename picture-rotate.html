@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>animation - picture</title>
+<script type="text/javascript">
+/**
+ * 回転させた画像を表示する
+ * @param {object} image - Imageオブジェクト
+ * @param {number} x - 画像の中心となるX座標
+ * @param {number} y - 画像の中心となるY座標
+ * @param {number} angle - 回転する角度[度]
+ */
+const TO_RADIANS = Math.PI/180;
+const drawRotatedImage = (context, image, x, y, angle) => {
+    // コンテキストを保存する
+    context.save();
+    // 回転の中心に原点を移動する
+    context.translate(x, y);
+    // canvasを回転する
+    context.rotate(angle * TO_RADIANS);
+    // 画像サイズの半分だけずらして画像を描画する
+    context.drawImage(image, -(image.width/2), -(image.height/2));
+    // コンテキストを元に戻す
+    context.restore();
+}
+
+window.onload = function(){
+
+	//コンテキストの取得
+	var canvas = document.getElementById("can");
+	if(!canvas || !canvas.getContext) return false;
+	var ctx = canvas.getContext("2d");
+	ctx.fillStyle = "#ceceff";//描画色を指定
+
+	//options
+	var point = {x:300,y:250};	//座標
+	var timer;			//タイマー
+	var delay = 10;			//タイマーを実行する間隔 (ms)
+	var rad = 0;
+
+	const img = new Image ();
+	//img.src="krr.jpg";
+	img.src="https://raw.githubusercontent.com/kazuyuki/demo/master/krr.jpg";
+
+	//繰り返し描画を行う関数。
+	var loop = function(){
+
+		//描画
+
+		//ctx.clearRect(0,0,600,500);	//一度canvasをクリア
+
+		drawRotatedImage(ctx, img, point.x, point.y, 360*8 * Math.sin(rad/8 * TO_RADIANS) );
+		//ctx.setTransform(2*Math.cos(rad), 0, 0, 2*Math.cos(rad), 0, 0);
+		rad++;
+
+		//ctx.drawImage(img, point.x - (img.width / 2), point.y - (img.height / 2));
+
+		point.x += Math.floor( Math.random() * (2 + 1) ) - 1;
+		point.y += Math.floor( Math.random() * (2 + 1) ) - 1;
+		if (point.x < 0) {
+			point.x = 0;
+		}
+		if (point.x > 600) {
+			point.x = 600;
+		}
+		if (point.y < 0) {
+			point.y = 0;
+		}
+		if (point.y > 500) {
+			point.y = 500;
+		}
+
+
+		//タイマー(一度クリアしてから再設定。)
+		clearTimeout(timer);
+		timer = setTimeout(loop,delay);
+	}
+
+	loop();
+}
+</script>
+<!--
+<style type="text/css" media="screen">
+div#stage{
+	width:600px;
+	height:500px;
+	position:absolute;
+	top:50%;
+	left:50%;
+	margin-left:-300px;
+	margin-top:-250px;
+	background:#000;
+}
+</style>
+-->
+<style type="text/css" media="screen">
+body{
+	background-color : #000000;
+}
+div#stage{
+	position:absolute;
+	background:#fff;
+}
+</style>
+</head>
+<body>
+<div id="stage">
+<canvas id="can" width="600" height="500"></canvas>
+</div>
+</body>
+</html> 

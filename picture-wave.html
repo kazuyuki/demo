@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>animation - picture</title>
+<script type="text/javascript">
+var RADIAN = Math.PI/180;
+window.onload = function(){
+
+	//コンテキストの取得
+	var canvas = document.getElementById("can");
+	if(!canvas || !canvas.getContext) return false;
+	var ctx = canvas.getContext("2d");
+
+	var point = {x:300,y:250};	//座標
+	var timer;			//タイマー
+	var delay = 30;			//タイマーを実行する間隔 (ms)
+
+	var rad = 0;
+	var pic = new Image();
+	var dat;
+
+	var img = new Image ();
+	console.log("img width :" + img.width);
+	console.log("img height:" + img.height);
+
+	img.onload = function(){
+		console.log("img width :" + img.width);
+		console.log("img height:" + img.height);
+
+		ctx.drawImage(img, 0, 0);
+		pic = ctx.getImageData(0, 0, img.width, img.height);
+		ctx.clearRect(0,0,600,500);	//canvasをクリア
+
+		dat = pic.data;
+	}
+	img.src='krr.jpg';
+	//img.src="https://raw.githubusercontent.com/kazuyuki/demo/master/krr.jpg";
+
+	//繰り返し描画を行う関数。
+	var loop = function(){
+		for ( var y = 0; y < pic.height; y++) {
+			var dx = 5 * Math.sin(rad + y * RADIAN);
+			for ( var x = 0; x < pic.width; x++) {
+				ctx.fillStyle =`rgb(	${dat[(y * pic.width + x)*4]},
+							${dat[(y * pic.width + x)*4+1]},
+							${dat[(y * pic.width + x)*4+2]})`;
+				ctx.fillRect(x + dx, y + dx, 2, 2);
+			}
+		}
+		rad++;
+		//タイマー(一度クリアしてから再設定。)
+		clearTimeout(timer);
+		timer = setTimeout(loop,delay);
+	}
+	loop();
+}
+</script>
+<style type="text/css" media="screen">
+body{
+	background-color : #000000;
+}
+div#stage{
+	position:absolute;
+	background:#fff;
+}
+</style>
+</head>
+<body>
+<div id="stage">
+<canvas id="can" width="600" height="500"></canvas>
+</div>
+</body>
+</html> 
