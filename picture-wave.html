@@ -12,48 +12,44 @@ window.onload = function(){
 	if(!canvas || !canvas.getContext) return false;
 	var ctx = canvas.getContext("2d");
 
-	var point = {x:300,y:250};	//座標
 	var timer;			//タイマー
 	var delay = 30;			//タイマーを実行する間隔 (ms)
-
 	var rad = 0;
-	var pic = new Image();
-	var dat;
-
 	var img = new Image ();
-	console.log("img width :" + img.width);
-	console.log("img height:" + img.height);
-
 	img.onload = function(){
-		console.log("img width :" + img.width);
-		console.log("img height:" + img.height);
-
 		ctx.drawImage(img, 0, 0);
-		pic = ctx.getImageData(0, 0, img.width, img.height);
-		ctx.clearRect(0,0,600,500);	//canvasをクリア
 
-		dat = pic.data;
+		// ImageData Source
+		var ids = ctx.getImageData(0, 0, img.width, img.height);
+
+		// ImageData Trget
+		var idt = new ImageData(img.width * 2, img.height * 2);
+
+		//繰り返し描画を行う関数。
+		var loop = function(){
+			for ( var y = 0; y < ids.height; y++) {
+				var dx = parseInt(40 + 40 * Math.sin(rad + y * RADIAN));
+				//var dy = parseInt(20 + 20 * Math.sin(rad + y * RADIAN));
+				//var dx = 0;
+				var dy = 0;
+				for ( var x = 0; x < ids.width; x++) {
+					idt.data[((y + dy) * idt.width + x + dx) * 4    ] = ids.data[(y * ids.width + x) * 4    ];
+					idt.data[((y + dy) * idt.width + x + dx) * 4 + 1] = ids.data[(y * ids.width + x) * 4 + 1];
+					idt.data[((y + dy) * idt.width + x + dx) * 4 + 2] = ids.data[(y * ids.width + x) * 4 + 2];
+					idt.data[((y + dy) * idt.width + x + dx) * 4 + 3] = ids.data[(y * ids.width + x) * 4 + 3];
+				}
+			}
+			//ctx.clearRect(0,0,600,500);	//canvasをクリア
+			ctx.putImageData(idt, 0, 0);
+			rad = rad + 0.1;
+			//タイマー(一度クリアしてから再設定。)
+			clearTimeout(timer);
+			timer = setTimeout(loop,delay);
+		}
+		loop();
 	}
 	img.src='krr.jpg';
 	//img.src="https://raw.githubusercontent.com/kazuyuki/demo/master/krr.jpg";
-
-	//繰り返し描画を行う関数。
-	var loop = function(){
-		for ( var y = 0; y < pic.height; y++) {
-			var dx = 5 * Math.sin(rad + y * RADIAN);
-			for ( var x = 0; x < pic.width; x++) {
-				ctx.fillStyle =`rgb(	${dat[(y * pic.width + x)*4]},
-							${dat[(y * pic.width + x)*4+1]},
-							${dat[(y * pic.width + x)*4+2]})`;
-				ctx.fillRect(x + dx, y + dx, 2, 2);
-			}
-		}
-		rad++;
-		//タイマー(一度クリアしてから再設定。)
-		clearTimeout(timer);
-		timer = setTimeout(loop,delay);
-	}
-	loop();
 }
 </script>
 <style type="text/css" media="screen">
